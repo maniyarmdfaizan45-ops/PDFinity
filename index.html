@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFinity | Everything you need for PDFs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Background Elements -->
+    <div class="bg-mesh">
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+        <div class="bg-blob blob-3"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-shapes me-2"></i>PDFinity
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="d-none d-md-flex align-items-center me-4">
+                    <a href="index.html" class="nav-link-custom active">Home</a>
+                </div>
+                <div class="theme-switch" id="theme-toggle-btn" title="Toggle Theme">
+                    <div class="theme-switch-thumb">
+                        <i class="fas fa-sun" id="theme-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="py-5 text-center container">
+        <div class="row pt-5 justify-content-center">
+            <div class="col-lg-8 animate-up">
+                <h1 class="display-3 mb-4 fw-bold">Every tool you need to work with <span
+                        class="text-gradient">PDFs</span></h1>
+                <p class="lead text-muted mb-5">
+                    100% Free, Secure, and Private. No file uploads to any server.
+                    Your privacy is our priority.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tools Grid -->
+    <section class="container pb-5">
+        <div class="row g-4 justify-content-center">
+            <!-- Merge PDF -->
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <a href="merge.html" class="text-decoration-none h-100 d-block">
+                    <div class="card h-100 p-4 border-0 animate-up delay-1">
+                        <div class="card-body">
+                            <div class="tool-icon-box icon-merge">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Merge PDF</h4>
+                            <p class="text-muted small mb-0">Combine PDFs in the order you want with the easiest PDF
+                                merger available.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Split PDF -->
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <a href="split.html" class="text-decoration-none h-100 d-block">
+                    <div class="card h-100 p-4 border-0 animate-up delay-2">
+                        <div class="card-body">
+                            <div class="tool-icon-box icon-split">
+                                <i class="fas fa-scissors"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Split PDF</h4>
+                            <p class="text-muted small mb-0">Separate one page or a whole set for easy conversion into
+                                independent PDF files.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Compress PDF -->
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <a href="compress.html" class="text-decoration-none h-100 d-block">
+                    <div class="card h-100 p-4 border-0 animate-up delay-1">
+                        <div class="card-body">
+                            <div class="tool-icon-box icon-compress">
+                                <i class="fas fa-compress-arrows-alt"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Compress PDF</h4>
+                            <p class="text-muted small mb-0">Reduce file size while optimizing for maximal PDF quality.
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- PDF to Word -->
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <a href="pdf-to-word.html" class="text-decoration-none h-100 d-block">
+                    <div class="card h-100 p-4 border-0 animate-up delay-2">
+                        <div class="card-body">
+                            <div class="tool-icon-box icon-pdf-word">
+                                <i class="fas fa-file-word"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">PDF to Word</h4>
+                            <p class="text-muted small mb-0">Easily convert your PDF files into editable DOC documents.
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Word to PDF -->
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <a href="word-to-pdf.html" class="text-decoration-none h-100 d-block">
+                    <div class="card h-100 p-4 border-0 animate-up delay-1">
+                        <div class="card-body">
+                            <div class="tool-icon-box icon-word-pdf">
+                                <i class="fas fa-file-export"></i>
+                            </div>
+                            <h4 class="fw-bold mb-2">Word to PDF</h4>
+                            <p class="text-muted small mb-0">Make DOC and DOCX files easy to read by converting them to
+                                PDF.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Edit PDF (Keep Soon) -->
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100 p-4 border-0 animate-up delay-2 opacity-75" style="cursor: pointer;"
+                    onclick="Utils.showToast('Feature arriving soon.', 'info')">
+                    <div class="card-body">
+                        <div class="tool-icon-box icon-edit">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Edit PDF <span class="badge bg-secondary ms-1"
+                                style="font-size: 0.6rem;">Soon</span></h4>
+                        <p class="text-muted small mb-0">Add text, images, shapes or freehand annotations to a PDF
+                            document.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="py-5 bg-opacity-10 bg-primary">
+        <div class="container text-center py-5">
+            <h2 class="fw-bold mb-4">The PDF software trusted by millions</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                PDFinity is your number one web app for editing PDF with ease.
+                Enjoy all the tools you need to work efficiently with your digital documents while keeping your data
+                safe and secure.
+            </p>
+        </div>
+    </section>
+
+    <footer class="py-5 bg-mesh">
+        <div class="container text-center">
+            <p class="text-muted small">&copy; 2026 PDFinity. Built for productivity and privacy.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="utils.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compress PDF | PDFinity</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .workspace { display: flex; min-height: calc(100vh - 80px); }
+        .main-content { flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .sidebar { width: 350px; background: var(--glass-bg); backdrop-filter: blur(40px); border-left: 1px solid var(--border-color); padding: 2rem; display: flex; flex-direction: column; z-index: 10; }
+        .preview-container { max-width: 600px; width: 100%; position: relative; }
+        .pdf-preview { width: 100%; border-radius: 1rem; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 1px solid var(--border-color); background: white; }
+        .custom-radio-group { display: flex; flex-direction: column; gap: 1rem; }
+        .custom-radio-card { border: 1px solid var(--border-color); border-radius: 1rem; padding: 1.25rem; cursor: pointer; transition: all 0.3s ease; position: relative; }
+        .custom-radio-card:hover { border-color: var(--primary-color); background: rgba(139, 92, 246, 0.02); }
+        .custom-radio-card.active { border-color: var(--primary-color); background: rgba(139, 92, 246, 0.05); }
+        .custom-radio-card input { position: absolute; opacity: 0; }
+        @media (max-width: 992px) { .workspace { flex-direction: column; } .sidebar { width: 100%; border-left: none; border-top: 1px solid var(--border-color); } }
+    </style>
+</head>
+<body>
+
+    <div class="bg-mesh">
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+        <div class="bg-blob blob-3"></div>
+    </div>
+
+    <nav class="navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-shapes me-2"></i>PDFinity
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="d-none d-md-flex align-items-center me-4">
+                    <a href="index.html" class="nav-link-custom">Home</a>
+                </div>
+                <div class="theme-switch" id="theme-toggle-btn" title="Toggle Theme">
+                    <div class="theme-switch-thumb">
+                        <i class="fas fa-sun" id="theme-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="workspace">
+        <main class="main-content">
+            <div id="initial-drop-zone" class="w-100 d-flex align-items-center justify-content-center">
+                <div id="drop-zone" class="drop-zone w-100 shadow-sm border-0" style="max-width: 800px;">
+                    <input type="file" id="file-input" accept="application/pdf" class="d-none">
+                    <div class="mb-4 bg-opacity-10 p-5 rounded-circle d-inline-block" style="background-color: rgba(16, 185, 129, 0.1);">
+                        <i class="fas fa-compress-arrows-alt fa-4x" style="color: #10b981;"></i>
+                    </div>
+                    <h2 class="fw-bold">Compress PDF</h2>
+                    <p class="text-muted lead">Reduce file size while optimizing for maximal PDF quality.</p>
+                    <button class="btn btn-primary btn-lg rounded-pill px-5 py-3 mt-3">Select PDF file</button>
+                </div>
+            </div>
+
+            <div id="preview-container" class="preview-container d-none animate-up">
+                <img id="pdf-preview-img" class="pdf-preview" src="" alt="PDF Preview">
+                <div class="text-center mt-4">
+                    <h4 id="file-name-display" class="fw-bold mb-1">filename.pdf</h4>
+                    <p id="file-size-display" class="text-muted small">1.2 MB</p>
+                </div>
+            </div>
+        </main>
+
+        <aside id="sidebar" class="sidebar d-none">
+            <div class="mb-5">
+                <h4 class="fw-bold mb-1">Compression Options</h4>
+                <p class="text-muted small">Choose the compression level that suits you.</p>
+            </div>
+
+            <div class="mb-auto">
+                <div class="custom-radio-group">
+                    <label class="custom-radio-card" for="level-extreme">
+                        <input type="radio" name="compLevel" id="level-extreme" value="extreme">
+                        <div class="fw-bold mb-1 text-danger">Extreme Compression</div>
+                        <small class="text-muted d-block">Less quality, high compression.</small>
+                    </label>
+
+                    <label class="custom-radio-card active" for="level-recommended">
+                        <input type="radio" name="compLevel" id="level-recommended" value="recommended" checked>
+                        <div class="fw-bold mb-1 text-primary">Recommended Compression</div>
+                        <small class="text-muted d-block">Good quality, good compression.</small>
+                    </label>
+
+                    <label class="custom-radio-card" for="level-less">
+                        <input type="radio" name="compLevel" id="level-less" value="less">
+                        <div class="fw-bold mb-1 text-success">Less Compression</div>
+                        <small class="text-muted d-block">High quality, less compression.</small>
+                    </label>
+                </div>
+            </div>
+
+            <div id="action-container" class="mt-4">
+                <div class="progress-container mb-4">
+                    <div id="comp-progress" class="progress-bar"></div>
+                </div>
+                <button id="compress-btn" class="btn btn-primary btn-lg w-100 rounded-pill py-3 shadow-lg">
+                    <i class="fas fa-compress-arrows-alt me-2"></i> Compress PDF
+                </button>
+                <button id="change-file" class="btn btn-link btn-sm w-100 mt-3 text-muted text-decoration-none">Change PDF file</button>
+            </div>
+        </aside>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+    <script src="utils.js"></script>
+    <script src="compress.js"></script>
+</body>
+</html>

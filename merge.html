@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge PDFs | PDFinity</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .workspace {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .sidebar {
+            width: 350px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border-left: 1px solid var(--border-color);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 2rem;
+        }
+        .file-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: grab;
+        }
+        .file-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+        .file-thumbnail {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: #eee;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .remove-file-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            z-index: 5;
+        }
+        .remove-file-btn:hover {
+            transform: scale(1.1);
+            background: #ff6b81;
+        }
+        .add-more-card {
+            border: 2px dashed var(--primary-color);
+            background: rgba(139, 92, 246, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+        }
+        .add-more-card:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+        @media (max-width: 992px) {
+            .workspace { flex-direction: column; }
+            .sidebar { width: 100%; border-left: none; border-top: 1px solid var(--border-color); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Elements -->
+    <div class="bg-mesh">
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+        <div class="bg-blob blob-3"></div>
+    </div>
+
+    <nav class="navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-shapes me-2"></i>PDFinity
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="d-none d-md-flex align-items-center me-4">
+                    <a href="index.html" class="nav-link-custom">Home</a>
+                </div>
+                <div class="theme-switch" id="theme-toggle-btn" title="Toggle Theme">
+                    <div class="theme-switch-thumb">
+                        <i class="fas fa-sun" id="theme-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="workspace">
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Drop Zone (Initial) -->
+            <div id="initial-drop-zone" class="h-100 d-flex align-items-center justify-content-center">
+                <div id="drop-zone" class="drop-zone w-100 shadow-sm border-0" style="max-width: 800px;">
+                    <input type="file" id="file-input" multiple accept="application/pdf" class="d-none">
+                    <div class="mb-4 bg-primary bg-opacity-10 p-5 rounded-circle d-inline-block">
+                        <i class="fas fa-cloud-upload-alt fa-4x text-primary"></i>
+                    </div>
+                    <h2 class="fw-bold">Merge PDF files</h2>
+                    <p class="text-muted lead">Select multiple PDF files and merge them in seconds.</p>
+                    <button class="btn btn-primary btn-lg rounded-pill px-5 py-3 mt-3">Select PDF files</button>
+                </div>
+            </div>
+
+            <!-- File Grid (After upload) -->
+            <div id="file-grid-container" class="d-none animate-up">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <h3 class="fw-bold mb-0">Arrange your files</h3>
+                    <button id="clear-all" class="btn btn-sm btn-outline-danger rounded-pill px-4">
+                        <i class="fas fa-sync-alt me-2"></i>Reset All
+                    </button>
+                </div>
+                <div id="file-grid" class="file-grid">
+                    <!-- File cards will be injected here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Options Sidebar -->
+        <aside id="sidebar" class="sidebar d-none">
+            <div class="mb-5">
+                <h4 class="fw-bold mb-1">Merge PDF</h4>
+                <p class="text-muted small">Combine files into a single document.</p>
+            </div>
+
+            <div class="mb-auto">
+                <div class="card p-3 border-0 bg-opacity-10 bg-primary mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-info-circle text-primary me-3"></i>
+                        <small class="text-muted">Files will be merged in the order shown on the left.</small>
+                    </div>
+                </div>
+                
+                <div id="file-count-badge" class="mb-4">
+                    <span class="badge-premium">0 Files Selected</span>
+                </div>
+            </div>
+
+            <div id="action-container" class="mt-4">
+                <div class="progress-container mb-4">
+                    <div id="merge-progress" class="progress-bar"></div>
+                </div>
+                <button id="merge-btn" class="btn btn-primary btn-lg w-100 rounded-pill py-3 shadow-lg">
+                    <i class="fas fa-object-group me-2"></i> Merge PDF
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <!-- PDF.js for thumbnails -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
+    <script src="utils.js"></script>
+    <script src="merge.js"></script>
+</body>
+</html>

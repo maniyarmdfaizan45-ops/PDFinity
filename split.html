@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split PDF | PDFinity</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .workspace { display: flex; min-height: calc(100vh - 80px); }
+        .main-content { flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .sidebar { width: 350px; background: var(--glass-bg); backdrop-filter: blur(40px); border-left: 1px solid var(--border-color); padding: 2rem; display: flex; flex-direction: column; z-index: 10; }
+        .preview-container { max-width: 600px; width: 100%; position: relative; }
+        .pdf-preview { width: 100%; border-radius: 1rem; box-shadow: 0 20px 40px rgba(0,0,0,0.15); border: 1px solid var(--border-color); background: white; }
+        .page-badge { position: absolute; top: 20px; right: 20px; background: var(--primary-gradient); color: white; padding: 0.5rem 1rem; border-radius: 2rem; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .custom-radio-group { display: flex; flex-direction: column; gap: 1rem; }
+        .custom-radio-card { border: 1px solid var(--border-color); border-radius: 1rem; padding: 1.25rem; cursor: pointer; transition: all 0.3s ease; position: relative; }
+        .custom-radio-card:hover { border-color: var(--primary-color); background: rgba(139, 92, 246, 0.02); }
+        .custom-radio-card.active { border-color: var(--primary-color); background: rgba(139, 92, 246, 0.05); ring: 2px solid var(--primary-color); }
+        .custom-radio-card input { position: absolute; opacity: 0; }
+        @media (max-width: 992px) { .workspace { flex-direction: column; } .sidebar { width: 100%; border-left: none; border-top: 1px solid var(--border-color); } }
+    </style>
+</head>
+<body>
+
+    <!-- Background Elements -->
+    <div class="bg-mesh">
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+        <div class="bg-blob blob-3"></div>
+    </div>
+
+    <nav class="navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-shapes me-2"></i>PDFinity
+            </a>
+            <div class="d-flex align-items-center">
+                <div class="d-none d-md-flex align-items-center me-4">
+                    <a href="index.html" class="nav-link-custom">Home</a>
+                </div>
+                <div class="theme-switch" id="theme-toggle-btn" title="Toggle Theme">
+                    <div class="theme-switch-thumb">
+                        <i class="fas fa-sun" id="theme-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="workspace">
+        <main class="main-content">
+            <div id="initial-drop-zone" class="w-100 d-flex align-items-center justify-content-center">
+                <div id="drop-zone" class="drop-zone w-100 shadow-sm border-0" style="max-width: 800px;">
+                    <input type="file" id="file-input" accept="application/pdf" class="d-none">
+                    <div class="mb-4 bg-opacity-10 p-5 rounded-circle d-inline-block" style="background-color: rgba(236, 72, 153, 0.1);">
+                        <i class="fas fa-scissors fa-4x" style="color: #ec4899;"></i>
+                    </div>
+                    <h2 class="fw-bold">Split PDF file</h2>
+                    <p class="text-muted lead">Separate one page or a whole set for easy conversion into independent PDF files.</p>
+                    <button class="btn btn-primary btn-lg rounded-pill px-5 py-3 mt-3">Select PDF file</button>
+                </div>
+            </div>
+
+            <div id="preview-container" class="preview-container d-none animate-up">
+                <div class="page-badge" id="total-pages-badge">5 Pages</div>
+                <img id="pdf-preview-img" class="pdf-preview" src="" alt="PDF Preview">
+                <div class="text-center mt-4">
+                    <h4 id="file-name-display" class="fw-bold mb-1">filename.pdf</h4>
+                    <p id="file-size-display" class="text-muted small">1.2 MB</p>
+                </div>
+            </div>
+        </main>
+
+        <aside id="sidebar" class="sidebar d-none">
+            <div class="mb-5">
+                <h4 class="fw-bold mb-1">Split PDF</h4>
+                <p class="text-muted small">Configure how you want to split your file.</p>
+            </div>
+
+            <div class="mb-auto">
+                <div class="custom-radio-group">
+                    <label class="custom-radio-card active" for="method-all">
+                        <input type="radio" name="splitMethod" id="method-all" value="all" checked>
+                        <div class="fw-bold mb-1">Split all pages</div>
+                        <small class="text-muted d-block">Every page will be a separate PDF.</small>
+                    </label>
+
+                    <label class="custom-radio-card" for="method-range">
+                        <input type="radio" name="splitMethod" id="method-range" value="range">
+                        <div class="fw-bold mb-1">Custom Range</div>
+                        <small class="text-muted d-block">Extract a specific block of pages.</small>
+                        <div id="range-input-group" class="d-none mt-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col"><input type="number" id="range-start" class="form-control form-control-sm rounded-pill px-3" placeholder="From"></div>
+                                <div class="col-auto">to</div>
+                                <div class="col"><input type="number" id="range-end" class="form-control form-control-sm rounded-pill px-3" placeholder="To"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="custom-radio-card" for="method-extract">
+                        <input type="radio" name="splitMethod" id="method-extract" value="extract">
+                        <div class="fw-bold mb-1">Extract Pages</div>
+                        <small class="text-muted d-block">Select individual pages to keep.</small>
+                        <div id="extract-input-group" class="d-none mt-3">
+                            <input type="text" id="extract-pages" class="form-control form-control-sm rounded-pill px-3" placeholder="e.g. 1, 3, 5-7">
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div id="action-container" class="mt-4">
+                <div class="progress-container mb-4">
+                    <div id="split-progress" class="progress-bar"></div>
+                </div>
+                <button id="split-btn" class="btn btn-primary btn-lg w-100 rounded-pill py-3 shadow-lg">
+                    <i class="fas fa-scissors me-2"></i> Split PDF
+                </button>
+                <button id="change-file" class="btn btn-link btn-sm w-100 mt-3 text-muted text-decoration-none">Change PDF file</button>
+            </div>
+        </aside>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="split.js"></script>
+</body>
+</html>
