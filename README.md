@@ -5,7 +5,7 @@ A professional, fully functional, and private PDF manipulation tool built with H
 **PDFinity** runs 100% in your browser. Your files are never uploaded to any server, ensuring complete privacy and security.
 
 ## 🚀 Live Demo
-[Link to your GitHub Pages URL here]
+[https://maniyarmdfaizan45-ops.github.io/PDFinity/]
 
 ## ✨ Features
 
@@ -52,4 +52,4 @@ A professional, fully functional, and private PDF manipulation tool built with H
 PDFinity does not collect, store, or share any of your data. All file processing happens locally in your browser's memory using JavaScript.
 
 ---
-Built by [Your Name/GitHub Username]
+Built by [Mohd_Faizan_Maniyar]
